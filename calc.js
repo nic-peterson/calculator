@@ -19,6 +19,8 @@ const keyArr = [
   { id: "=", type: "operator" },
 ];
 
+let userInput = [];
+
 const setKeys = (side) => {
   const s = 480 / side;
   const square = side * side;
@@ -31,7 +33,8 @@ const setKeys = (side) => {
     key.addEventListener(
       "click",
       () => {
-        display.textContent += `${key.id}`;
+        buttonClick(keyArr[i].id, keyArr[i].type);
+        //display.textContent += `${key.id}`;
         //e.target.style.backgroundColor = "orange";
       },
       false
@@ -41,6 +44,24 @@ const setKeys = (side) => {
 };
 
 setKeys(4);
+
+const buttonClick = (id, type) => {
+  if (id === "C") clearDisplay();
+  else if (id === "=") {
+      console.log("EQUALS")
+  }
+  else {
+    userInput.push({ id, type });
+    display.textContent += id;
+    console.log(userInput);
+  }
+};
+
+const clearDisplay = () => {
+  userInput = [];
+  display.textContent = "";
+  console.log(userInput);
+};
 
 const add = (x, y) => {
   return x + y;
@@ -63,6 +84,7 @@ const operate = (operator, x, y) => {
   return operator(x, y);
 };
 
+/*
 console.log(`add function: ${add(10, 2)}`);
 console.log(`subtract function: ${subtract(10, 2)}`);
 console.log(`multiply function: ${multiply(10, 2)}`);
@@ -72,3 +94,4 @@ console.log(`operate add function: ${operate(add, 10, 2)}`);
 console.log(`operate subtract function: ${operate(subtract, 10, 2)}`);
 console.log(`operate multiply function: ${operate(multiply, 10, 2)}`);
 console.log(`operate divide function: ${operate(divide, 10, 2)}`);
+*/
