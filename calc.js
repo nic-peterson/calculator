@@ -1,3 +1,4 @@
+// Initiatize variables
 const keys = document.querySelector(".keys");
 const display = document.querySelector("#display");
 const keyArr = [
@@ -24,6 +25,10 @@ let firstNum;
 let secondNum;
 let subOperator;
 
+/*
+This function dynamically creates and assigns the keys. We're setting the attributes, text content, 
+and mapping the button clicks. 
+*/
 const setKeys = (side) => {
   const s = 480 / side;
   const square = side * side;
@@ -46,37 +51,34 @@ const setKeys = (side) => {
 
 setKeys(4);
 
+/*
+This function is handling most of the logic. First we're seeing if the user is asking to clear, in which
+case, we just call the clearDisplay function. 
+
+If the user is asking to evaluate w/ '=', we're calling a routing function to display the final output. 
+The routing function asks for the two variables and the operator. The routing function will determine 
+the appropriate operator function and return the value. 
+
+
+The tricky part is the operator bit. For our purposes, we're only tracking two variables and the operator 
+so that we can string together more complicated calculations. If the user has input an operator, we'll 
+look to see if the first variable has been assigned. If it has not, we'll assign the first variable and the 
+operator that we will use. 
+
+If the first variable has been assigned, then that implies that this is there is already an existing operator in play. 
+In that case, we assign the second variable. Then we assign to the first variable to the routing function that 
+returns the operation between the original two variables. The second variable is set to null and the suboperator
+variable that we're using for tracking is updated to the operator that was just selected. 
+*/
+
 const buttonClick = (id, type) => {
-  //console.log(`id: ${id}\ntype: ${type}`);
   if (id === "C") clearDisplay();
   else if (id === "=") {
-    if(!secondNum) secondNum = userInput;
-    console.log(`firstNum: ${firstNum}\nsecondNum: ${secondNum}`);
+    if (!secondNum) secondNum = userInput;
     display.textContent = operate(subOperator, firstNum, secondNum);
     clearVars();
     userInput = "";
-
   } else if (type === "operator") {
-    // if the user clicks an operator we need to determine if it's the first time or not.
-    // If it's the first time, we'll assign the existing string to the firstNum variable.
-    // Then we'll assign the subOperator variable.
-    // If it's not the first time, then the subOperator variable will be assigne.
-    // In that case, we'll need to assign the secondNum variable. Then we'll assign the firstNum.
-    // Then afterwards, we'll clear out the secondNum.
-
-    /*
-      Case 10 + 20  =
-      1 → 0 → + => we set that firstNum isn't assigned yet. So firstNum = parseInt(10). 
-      SubOperate = +. Then userInput is cleared out so we can use it to collect the secondNum. 
-      So, I keep entering digits, 2 → 0. then equal. When I press equal, I'll display the text content. 
-      Then I should clear out firstNum, secondNum, and subOperator. 
-      END
-      
-      Case 10 + 20 + 30 = 
-      1 → 0 → + => we set that firstNum isn't assigned yet. So firstNum = parseInt(10). 
-      SubOperate = +. Then userInput is cleared out so we can use it to collect the secondNum. 
-      So, I keep entering digits, 2 → 0. When I press the + a second time, secondNum = parseInt(20). 
-      */
     if (!firstNum) {
       display.textContent += id;
       firstNum = parseInt(userInput);
@@ -84,26 +86,15 @@ const buttonClick = (id, type) => {
       userInput = "";
     } else if (firstNum) {
       display.textContent += id;
-      console.log("BEFORE");
-      console.log(`userInput: ${userInput}`);
-      console.log(`firstNum: ${firstNum}`);
-      console.log(`secondNum: ${secondNum}`);
-      console.log(`subOperator: ${subOperator}`);
       secondNum = parseInt(userInput);
       firstNum = operate(subOperator, firstNum, secondNum);
       secondNum = "";
       userInput = "";
       subOperator = id;
-      console.log("AFTER");
-      console.log(`userInput: ${userInput}`);
-      console.log(`firstNum: ${firstNum}`);
-      console.log(`secondNum: ${secondNum}`);
-      console.log(`subOperator: ${subOperator}`);
     }
   } else if (type === "num") {
     userInput += id;
     display.textContent += id;
-    console.log(userInput);
   }
 };
 
@@ -127,9 +118,6 @@ const clearVars = () => {
 };
 
 const add = (x, y) => {
-  console.log(`typeof x: ${typeof x}\ntypeof y: ${typeof y}`);
-  console.log(`x: ${x}\ny: ${y}`);
-  console.log(`x+y = ${x + y}`);
   return Math.round(x + y);
 };
 
@@ -142,26 +130,9 @@ const multiply = (x, y) => {
 };
 
 const divide = (x, y) => {
-  console.log(`y: ${y}`);
-  if(y===0) {
-      return "Cannot divide by 0!";
+  if (y === 0) {
+    return "Cannot divide by 0!";
   } else {
-      return Math.round(x / y);
+    return Math.round(x / y);
   }
-  /*
-  if (y === 0) {return "Cannot divide by 0!"};
-  else { return x / y};
-  */
 };
-
-/*
-console.log(`add function: ${add(10, 2)}`);
-console.log(`subtract function: ${subtract(10, 2)}`);
-console.log(`multiply function: ${multiply(10, 2)}`);
-console.log(`divide function: ${divide(10, 2)}`);
-
-console.log(`operate add function: ${operate(add, 10, 2)}`);
-console.log(`operate subtract function: ${operate(subtract, 10, 2)}`);
-console.log(`operate multiply function: ${operate(multiply, 10, 2)}`);
-console.log(`operate divide function: ${operate(divide, 10, 2)}`);
-*/
