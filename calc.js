@@ -59,16 +59,14 @@ If the user is asking to evaluate w/ '=', we're calling a routing function to di
 The routing function asks for the two variables and the operator. The routing function will determine 
 the appropriate operator function and return the value. 
 
+The tricky part is stringing together longer sequences. We're chaining them togther by only managing
+two variables (x and y) and the operation between them at any given time. 
 
-The tricky part is the operator bit. For our purposes, we're only tracking two variables and the operator 
-so that we can string together more complicated calculations. If the user has input an operator, we'll 
-look to see if the first variable has been assigned. If it has not, we'll assign the first variable and the 
-operator that we will use. 
+Any time that we choose a new operation, we first see if there is already an operation that we're tracking. 
 
-If the first variable has been assigned, then that implies that this is there is already an existing operator in play. 
-In that case, we assign the second variable. Then we assign to the first variable to the routing function that 
-returns the operation between the original two variables. The second variable is set to null and the suboperator
-variable that we're using for tracking is updated to the operator that was just selected. 
+If yes, we'll assign x to be the result of the operation between x and y. Now we're free to select a second number.
+From there, the user will either press = to close out the calculation. Or they'll continue to chain together
+additional operations. 
 */
 
 const buttonClick = (id, type) => {
@@ -98,6 +96,7 @@ const buttonClick = (id, type) => {
   }
 };
 
+// This function routes the operator to the corresponding operator function and return the result
 const operate = (operator, x, y) => {
   if (operator === "+") return add(parseInt(x), parseInt(y));
   else if (operator === "-") return subtract(parseInt(x), parseInt(y));
@@ -105,17 +104,21 @@ const operate = (operator, x, y) => {
   else if (operator === "*") return multiply(x, y);
 };
 
+// Clears the disply
 const clearDisplay = () => {
   userInput = "";
   display.textContent = "";
   clearVars();
 };
 
+// Clears the variables that we're using for tracking the calculations
 const clearVars = () => {
   firstNum = null;
   secondNum = null;
   subOperator = "";
 };
+
+// The four functions below handle the standard arithmetic operations.
 
 const add = (x, y) => {
   return Math.round(x + y);
