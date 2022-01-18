@@ -19,7 +19,10 @@ const keyArr = [
   { id: "=", type: "operator" },
 ];
 
-let userInput = [];
+let userInput = "";
+let firstNum;
+let secondNum;
+let subOperator;
 
 const setKeys = (side) => {
   const s = 480 / side;
@@ -34,8 +37,6 @@ const setKeys = (side) => {
       "click",
       () => {
         buttonClick(keyArr[i].id, keyArr[i].type);
-        //display.textContent += `${key.id}`;
-        //e.target.style.backgroundColor = "orange";
       },
       false
     );
@@ -46,42 +47,111 @@ const setKeys = (side) => {
 setKeys(4);
 
 const buttonClick = (id, type) => {
+  //console.log(`id: ${id}\ntype: ${type}`);
   if (id === "C") clearDisplay();
   else if (id === "=") {
-      console.log("EQUALS")
-  }
-  else {
-    userInput.push({ id, type });
+    if(!secondNum) secondNum = userInput;
+    console.log(`firstNum: ${firstNum}\nsecondNum: ${secondNum}`);
+    display.textContent = operate(subOperator, firstNum, secondNum);
+    clearVars();
+    userInput = "";
+
+  } else if (type === "operator") {
+    // if the user clicks an operator we need to determine if it's the first time or not.
+    // If it's the first time, we'll assign the existing string to the firstNum variable.
+    // Then we'll assign the subOperator variable.
+    // If it's not the first time, then the subOperator variable will be assigne.
+    // In that case, we'll need to assign the secondNum variable. Then we'll assign the firstNum.
+    // Then afterwards, we'll clear out the secondNum.
+
+    /*
+      Case 10 + 20  =
+      1 → 0 → + => we set that firstNum isn't assigned yet. So firstNum = parseInt(10). 
+      SubOperate = +. Then userInput is cleared out so we can use it to collect the secondNum. 
+      So, I keep entering digits, 2 → 0. then equal. When I press equal, I'll display the text content. 
+      Then I should clear out firstNum, secondNum, and subOperator. 
+      END
+      
+      Case 10 + 20 + 30 = 
+      1 → 0 → + => we set that firstNum isn't assigned yet. So firstNum = parseInt(10). 
+      SubOperate = +. Then userInput is cleared out so we can use it to collect the secondNum. 
+      So, I keep entering digits, 2 → 0. When I press the + a second time, secondNum = parseInt(20). 
+      */
+    if (!firstNum) {
+      display.textContent += id;
+      firstNum = parseInt(userInput);
+      subOperator = id;
+      userInput = "";
+    } else if (firstNum) {
+      display.textContent += id;
+      console.log("BEFORE");
+      console.log(`userInput: ${userInput}`);
+      console.log(`firstNum: ${firstNum}`);
+      console.log(`secondNum: ${secondNum}`);
+      console.log(`subOperator: ${subOperator}`);
+      secondNum = parseInt(userInput);
+      firstNum = operate(subOperator, firstNum, secondNum);
+      secondNum = "";
+      userInput = "";
+      subOperator = id;
+      console.log("AFTER");
+      console.log(`userInput: ${userInput}`);
+      console.log(`firstNum: ${firstNum}`);
+      console.log(`secondNum: ${secondNum}`);
+      console.log(`subOperator: ${subOperator}`);
+    }
+  } else if (type === "num") {
+    userInput += id;
     display.textContent += id;
     console.log(userInput);
   }
 };
 
+const operate = (operator, x, y) => {
+  if (operator === "+") return add(parseInt(x), parseInt(y));
+  else if (operator === "-") return subtract(parseInt(x), parseInt(y));
+  else if (operator === "/") return divide(x, y);
+  else if (operator === "*") return multiply(x, y);
+};
+
 const clearDisplay = () => {
-  userInput = [];
+  userInput = "";
   display.textContent = "";
-  console.log(userInput);
+  clearVars();
+};
+
+const clearVars = () => {
+  firstNum = null;
+  secondNum = null;
+  subOperator = "";
 };
 
 const add = (x, y) => {
-  return x + y;
+  console.log(`typeof x: ${typeof x}\ntypeof y: ${typeof y}`);
+  console.log(`x: ${x}\ny: ${y}`);
+  console.log(`x+y = ${x + y}`);
+  return Math.round(x + y);
 };
 
 const subtract = (x, y) => {
-  return x - y;
+  return Math.round(x - y);
 };
 
 const multiply = (x, y) => {
-  return x * y;
+  return Math.round(x * y);
 };
 
 const divide = (x, y) => {
-  if (y === 0) return "Cannot divide by 0!";
-  else return x / y;
-};
-
-const operate = (operator, x, y) => {
-  return operator(x, y);
+  console.log(`y: ${y}`);
+  if(y===0) {
+      return "Cannot divide by 0!";
+  } else {
+      return Math.round(x / y);
+  }
+  /*
+  if (y === 0) {return "Cannot divide by 0!"};
+  else { return x / y};
+  */
 };
 
 /*
